@@ -8,9 +8,14 @@ using UnityEngine;
 /// </summary>
 public class TargetBlockController : MonoBehaviour
 {
+    /// <summary>ブロックを壊した時の得点</summary>
+    int m_score = 3;
+    /// <summary>スコアマネージャー</summary>
+    GameObject m_scoreManager;
+
     void Start()
     {
-
+        m_scoreManager = GameObject.Find("GameManager");    // GameManager を探して取ってくる
     }
 
     void Update()
@@ -26,9 +31,15 @@ public class TargetBlockController : MonoBehaviour
     {
         Debug.Log("Enter OnCollisionEnter2D."); // 関数が呼び出されたら Console にログを出力する
 
-        // 衝突相手がボールだったら自分自身を破棄する
+        // 衝突相手がボールだったら得点を追加し、自分自身を破棄する
         if (collision.gameObject.tag == "BallTag")
         {
+            if (m_scoreManager != null)
+            {
+                ScoreManager sm = m_scoreManager.GetComponent<ScoreManager>();
+                sm.AddScore(m_score);
+                sm.BlockBreakCounter += 1;
+            }
             Destroy(this.gameObject);
         }
     }
@@ -41,9 +52,15 @@ public class TargetBlockController : MonoBehaviour
     {
         Debug.Log("Enter OnTriggerEnter2D."); // 関数が呼び出されたら Console にログを出力する
 
-        // 衝突相手がボールだったら自分自身を破棄する
+        // 衝突相手がボールだったら得点を追加し、自分自身を破棄する
         if (collision.gameObject.tag == "BallTag")
         {
+            if (m_scoreManager != null)
+            {
+                ScoreManager sm = m_scoreManager.GetComponent<ScoreManager>();
+                sm.AddScore(m_score);
+                sm.BlockBreakCounter += 1;
+            }
             Destroy(this.gameObject);
         }
     }
