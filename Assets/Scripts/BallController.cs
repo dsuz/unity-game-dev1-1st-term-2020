@@ -12,6 +12,10 @@ public class BallController : MonoBehaviour
     [SerializeField] Vector2 m_powerDirection = Vector2.up + Vector2.right;
     /// <summary>ボールを最初に動かす力の大きさ</summary>
     [SerializeField] float m_powerScale = 5f;
+    /// <summary>ボールの最大速度</summary>
+    [SerializeField] float m_maxSpeed = 3f;
+    /// <summary>スペースキーを押した時にボールを動かす力の大きさ</summary>
+    [SerializeField] float m_shakePower = 5f;
     Rigidbody2D m_rb2d;
 
     void Start()
@@ -23,7 +27,25 @@ public class BallController : MonoBehaviour
 
     void Update()
     {
+        // ボールの速度を制限する
+        if (m_rb2d.velocity.magnitude > m_maxSpeed)
+        {
+            m_rb2d.velocity = m_rb2d.velocity.normalized * m_maxSpeed;
+        }
 
+        // スペースキーを押すと、ランダムな方向に力を加える
+        if (Input.GetButtonDown("Jump"))
+        {
+            float x = Random.Range(-1f, 1f);
+            float y = Random.Range(-1f, 1f);
+            Vector2 dir = Vector2.right * x + Vector2.up * y;
+            dir = dir.normalized;
+            m_rb2d.AddForce(dir * m_shakePower, ForceMode2D.Impulse);
+
+            // カメラを揺らす
+            CameraController camera = Camera.main.GetComponent<CameraController>(); // Camera.main でメインカメラの GameObject を取得できる
+            camera.Shake();
+        }
     }
 
     /// <summary>
